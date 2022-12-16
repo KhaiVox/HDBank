@@ -105,8 +105,8 @@
     }
 
     // Mua thẻ cào
-    function handleBuyCard() {
         let formSubmit = document.querySelector('.form-action-buy-card')
+    function handleBuyCard() {
         let typeSupplier = document.querySelector('#type-supplier').value
         let typePrice = document.querySelector('#type-price').value
         let quantity = document.querySelector('#quantity').value
@@ -208,9 +208,9 @@
     })
 
     // handle verify button
-    btnVerify.addEventListener('click', () => {
+    formSubmit.addEventListener('click', (e) => {
+        e.preventDefault();
         const icon = boxVerify.querySelector('.fas')
-        let formSubmit = document.querySelector('.form-submit-tranfer')
 
         if (OTP === yourInputNumber) {
             handleBuyCard()
@@ -267,9 +267,6 @@
                 })
             })
         } else {
-            formSubmit.addEventListener('submit', (e) => {
-                e.preventDefault()
-            })
             icon.classList.remove('fa-check-circle')
             icon.classList.add('fa-times-circle')
             boxVerify.querySelector('p').innerHTML = `
@@ -278,7 +275,7 @@
             <span class='text-muted'>Vui lòng <span class='btn-return text-dark'>thử lại</span></span>
             `
         }
-        boxVerify.classList.add('active')
+            boxVerify.classList.add('active')
     })
 
     // handle btn return
