@@ -1,0 +1,101 @@
+@import 'variables';
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    font-size: 62.5%;
+    line-height: 16px;
+}
+
+body {
+    min-height: 100vh;
+    overflow-x: hidden;
+    font-family: 'Nunito', sans-serif;
+}
+
+ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+a[href] {
+    text-decoration: none;
+}
+
+input:focus {
+    border-radius: 1px solid red;
+}
+
+
+/* Thanh Scroll */
+
+body::-webkit-scrollbar {
+    width: 4px;
+}
+
+body::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    background-color: $primary;
+}
+
+
+/* Hide step input number */
+
+// thay input bằng 1 class cụ thể
+// input::-webkit-outer-spin-button,
+// input::-webkit-inner-spin-button {
+//     -webkit-appearance: none;
+//     margin: 0;
+// }
+// Public
+.hidden {
+    display: none !important;
+}
+
+.w-60 {
+    width: 60% !important;
+}
+
+.w-40 {
+    width: 40% !important;
+}
+
+// Button
+.btn {
+    transition: 0.2s;
+    cursor: pointer;
+    padding: 6px 12px 5px;
+    font-size: 1.7rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 30px;
+    border-radius: $br5;
+    outline: none;
+}
+
+// Content
+.container-wrap {
+    display: flex;
+    width: 100%;
+}
+
+.container-right {
+    position: relative;
+    left: 300px;
+    width: 80%;
+    height: 100vh;
+    transition: 0.8s;
+}
+
+@import 'login';
+@import 'register';
+@import 'sidebar';
+@import 'home';
+@import 'tranfer';
+@import 'changePass';
+@import 'buyCard';

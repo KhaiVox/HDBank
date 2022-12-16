@@ -1,0 +1,342 @@
+<div class='container-left'>
+    {{> sidebar }}
+</div>
+<div class='container-right'>
+    <div class='tranfer'>
+        <div class='tranfer-left'>
+            <img style="top: 120px; width: 400px; margin-left: 42px; margin-right: 42px;"
+                src='https://i.postimg.cc/WzYmQH9H/1912cc54-29e7-472d-9e0b-e0bcbee757ab.jpg'
+                alt=''
+            />
+        </div>
+        <div class='tranfer-right'>
+            <div class='tranfer-header'>Mua mã thẻ <span class='id-account' hidden>{{token}}</span></div>
+
+            <div class='container-content'>
+                <div class='mobile-verify go-right active-box'>
+                    <div class='tranfer-item'>
+                        <div class='tranfer-title'>Nhà mạng :</div>
+                        <select id='type-supplier' name='type-supplier' class='tranfer-input' required>
+                            <option value=''>-- Chọn nhà mạng --</option>
+                            <option name='viettel'>Viettel</option>
+                            <option name='mobifone'>Mobifone</option>
+                            <option name='vinafone'>Vinafone</option>
+                        </select>
+                    </div>
+                    <div class='tranfer-item'>
+                        <div class='tranfer-title'>Mệnh giá :</div>
+                        <select id='type-price' name='type-price' class='tranfer-input' required>
+                            <option value=''>-- Chọn mệnh giá --</option>
+                            <option name='ten'>10000</option>
+                            <option name='twenty'>20000</option>
+                            <option name='fifty'>50000</option>
+                        </select>
+                    </div>
+                    <div class='tranfer-item'>
+                        <div class='tranfer-title'>Số lượng :</div>
+                        <input  
+                            type='number'
+                            class='tranfer-input'
+                            id='quantity'
+                            name='quantity'
+                            value='1'
+                            min='1'
+                            required
+                            disabled
+                            />
+                    </div>
+                    <div class='tranfer-button'>
+                        <span></span>
+                        <button class='btn btn-continue btn-confirm'>
+                            Tiếp tục
+                        </button>
+                    </div>
+                </div>
+                <div class='otp-container go-right'>
+                    <div class='nav d-flex align-items-center'>
+                        <i class='btn-back fas fa-arrow-left'></i>
+                        <p>Mã xác nhận</p>
+                    </div>
+                    <div class='text'>
+                        <p>
+                            Vui lòng nhập mã xác minh
+                            <br />được gửi đến
+                            <span class='phone'>+84971521***</span>
+                        </p>
+                        <p>
+                            Mã OTP sẽ hết hạn trong
+                            <span class='expire text-dark'>60s</span>
+                        </p>
+                    </div>
+                    <div class='otp-input d-flex'>
+                        <input type='text' maxlength='1' class='input' />
+                        <input type='text' maxlength='1' class='input' />
+                        <input type='text' maxlength='1' class='input' />
+                        <input type='text' maxlength='1' class='input' />
+                    </div>
+                    <span class='text-danger'></span>
+                    <form class='form-action-buy-card' method='POST'> 
+                        <button class='btn btn-verify d-flex align-items-center justify-content-between'>
+                            Xác nhận
+                            <i class='fas fa-arrow-right'></i>
+                        </button>
+                    </form>
+
+                    <div class='resend-code text-muted'>
+                        Không nhận được mã?
+                        <span class='btn-resend text-danger'>Gửi lại</span>
+                    </div>
+                </div>
+                <div class='box-verify'>
+                    <i class='fas fa-check-circle'></i>
+                    <p></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Copy id account
+    function handleCopy() {
+        var copyText = document.getElementById('inputAccount')
+        copyText.select()
+        navigator.clipboard.writeText(copyText.value)
+    }
+
+    // Mua thẻ cào
+    function handleBuyCard() {
+        let formSubmit = document.querySelector('.form-action-buy-card')
+        let typeSupplier = document.querySelector('#type-supplier').value
+        let typePrice = document.querySelector('#type-price').value
+        let quantity = document.querySelector('#quantity').value
+        let myIdAcct = document.querySelector('.id-account').innerHTML
+        let idService = "004704070000178"
+
+        formSubmit.addEventListener('submit', (e) => {
+            e.preventDefault()
+            refreshToken().then((value) => {
+                $.ajax({
+                    url: 'https://7ucpp7lkyl.execute-api.ap-southeast-1.amazonaws.com/dev/transfer',
+                    headers: {
+                        accept: 'application/json',
+                        'access-token': value,
+                        'x-api-key': 'hutech_hackathon@123456',
+                        'Content-Type': 'application/json',
+                    },
+                    method: 'POST',
+                    data: JSON.stringify({
+                        data: {
+                            amount: typePrice,
+                            description: "description",
+                            fromAcct: myIdAcct,
+                            toAcct: idService,
+                        },
+                        request: {
+                            requestId: 'a7ea23df-7468-439d-9b12-26eb4a760901',
+                            requestTime: '1667200102200',
+                        },
+                    }),
+                }).then((result) => {
+                    if (result.response.responseMessage == 'Format message invalid, toAcct invalid') {
+                        alert('Không tìm thấy tài khoản !')
+                    }
+                })
+            })
+        })
+    }
+
+    // Send OTP
+    const otpContainer = document.querySelector('.otp-container')
+    const mobileVerify = document.querySelector('.mobile-verify')
+    const boxVerify = document.querySelector('.box-verify')
+    const btnContinue = document.querySelector('.btn-continue')
+    const btnResend = document.querySelector('.btn-resend')
+    const btnVerify = document.querySelector('.btn-verify')
+    const btnBack = document.querySelector('.btn-back')
+    const phoneNumber = document.getElementById('phone-number')
+    const otpInput = document.querySelectorAll('.otp-input .input')
+    const containerContent = document.querySelector('.container-content')
+    const expireEle = document.querySelector('.expire')
+
+    // OTP
+    let expire = 30
+    let OTP
+    let countdown
+    let yourInputNumber = ''
+
+    // Handle animate
+    btnContinue.addEventListener('click', () => {
+        let typeSupplier = document.querySelector('#type-supplier').value
+        let typePrice = document.querySelector('#type-price').value
+        let quantity = document.querySelector('#quantity').value
+
+        if(typeSupplier == "" || typePrice == "") {
+            alert("Vui lòng điền đầy đủ thông tin !")
+        } else {
+            otpContainer.classList.remove('go-right')
+            mobileVerify.classList.remove('go-right')
+            OTP = randomOTP()
+            handleCountDown()
+            alert(`Mã xác thực của bạn là: ${OTP}`)
+        }
+    })
+
+    // back to set number screen
+    btnBack.addEventListener('click', () => {
+        otpContainer.classList.add('go-right')
+        otpContainer.classList.remove('active-box')
+        mobileVerify.classList.add('go-right', 'active-box')
+    })
+
+    // handle OTP input
+    otpInput.forEach((input) => {
+        input.addEventListener('keyup', (e) => {
+            const element = e.target
+
+            if (element.value.match(/\d/)) {
+                yourInputNumber += element.value
+                alertText('.otp-container .text-danger', '')
+
+                if (element.nextElementSibling) {
+                    element.nextElementSibling.focus()
+                }
+            } else {
+                alertText('.otp-container .text-danger', 'Enter a number in each field')
+            }
+        })
+    })
+
+    // handle verify button
+    btnVerify.addEventListener('click', () => {
+        const icon = boxVerify.querySelector('.fas')
+        let formSubmit = document.querySelector('.form-submit-tranfer')
+
+        if (OTP === yourInputNumber) {
+            handleBuyCard()
+
+            let apiKeyXata = 'xau_NFju5b34TYFnTVeex0PP51gJ1xGDoFmG0'
+            $.ajax({
+                url: 'https://6151_v-kh-i-s-workspace-uh7b6d.us-east-1.xata.sh/db/HDBank:main/tables/cards/query',
+                headers: {
+                    Authorization: 'Bearer' + ' ' + apiKeyXata,
+                    'Content-Type': 'application/json',
+                },
+                method: 'POST',
+                data: JSON.stringify({
+                    page: { size: 10 },
+                }),
+            }).then((result) => {
+                const data = result.records
+                let typePrice = document.querySelector('#type-price').value
+
+                function checkState(item) {
+                if (item.price == typePrice && item.sold == '0')
+                    return item;
+                }
+
+                let newArr = data.find(checkState);
+                let code = newArr.codeValue
+                icon.classList.add('fa-check-circle')
+                icon.classList.remove('fa-times-circle')
+                boxVerify.querySelector('p').innerHTML = `
+                    Mua mã thẻ thành công 🤗 <br/>
+                    <li class='account-item' style="margin: 12px; margin-right: 58px;">
+                        <h2 class='account-des'>${code}</h2>
+                        <input hidden type='text' value=${code} id='inputAccount' />
+                        <span class='button-copy' onclick='handleCopy()'><ion-icon name='copy-outline'></ion-icon></span>
+                        <span>
+                            <a href='tel:${code}' class="icon-send">
+                                <ion-icon name="add-circle-outline"></ion-icon>
+                            </a>
+                        </span>
+                    </li>
+                    `
+
+                // Set true for card in database 
+                $.ajax({
+                    url: 'https://6151_v-kh-i-s-workspace-uh7b6d.us-east-1.xata.sh/db/HDBank:main/tables/cards/data/' + newArr.id ,
+                    headers: {
+                        Authorization: 'Bearer' + ' ' + apiKeyXata,
+                        'Content-Type': 'application/json',
+                    },
+                    method: 'PATCH',
+                    data: JSON.stringify({price: newArr.price, codeValue: newArr.codeValue, sold: '1', state: false}),
+                }).then((result) => {
+                    console.log(result)
+                })
+            })
+        } else {
+            formSubmit.addEventListener('submit', (e) => {
+                e.preventDefault()
+            })
+            icon.classList.remove('fa-check-circle')
+            icon.classList.add('fa-times-circle')
+            boxVerify.querySelector('p').innerHTML = `
+            Xác minh thất bại
+            <br/>
+            <span class='text-muted'>Vui lòng <span class='btn-return text-dark'>thử lại</span></span>
+            `
+        }
+        boxVerify.classList.add('active')
+    })
+
+    // handle btn return
+    containerContent.addEventListener('click', (e) => {
+        const element = e.target
+        if (element.classList.contains('btn-return')) {
+            boxVerify.classList.remove('active')
+
+            activeStateOTP()
+        }
+    })
+
+    // handle btn request again
+    btnResend.addEventListener('click', activeStateOTP)
+
+    function handleCountDown() {
+        countdown = setInterval(() => {
+            expire--
+            if (expire === 0) {
+                clearInterval(countdown)
+                OTP = null
+            }
+            expireEle.textContent = expire < 10 ? '0' + expire + 's' : expire + 's'
+        }, 1000)
+    }
+
+    function alertText(element, text) {
+        document.querySelector(`${element}`).textContent = text
+    }
+
+    function randomOTP() {
+        let random = ''
+        Array.from({ length: 4 }, () => {
+            random += Math.floor(Math.random() * 10).toString()
+        })
+        return random
+    }
+
+    function resetStateOTP() {
+        clearInterval(countdown)
+        expire = 30
+        OTP = null
+        yourInputNumber = ''
+
+        otpInput.forEach((input) => {
+            input.value = ''
+        })
+    }
+
+    function formatPhoneNumber(number) {
+        return number.toString().slice(0, 7) + '***'
+    }
+
+    function activeStateOTP() {
+        resetStateOTP()
+
+        OTP = randomOTP()
+        handleCountDown()
+        alert(`Mã xác thực của bạn là: ${OTP}`)
+    }
+</script>

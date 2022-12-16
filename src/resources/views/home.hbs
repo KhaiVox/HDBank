@@ -1,0 +1,102 @@
+<div class='container-left'>
+    {{> sidebar }}
+</div>
+<div class='container-right'>
+    <div class='home-wrap'>
+        <div class='home-banner'>
+            <div><img
+                    class='home-banner-img'
+                    src='https://cdn.hdbank.com.vn/hdbank-file/news/HappyZoneFINAL1440x552_1659667762283.jpg'
+                    alt=''
+                /></div>
+            <div><img
+                    class='home-banner-img'
+                    src='https://cdn.hdbank.com.vn/hdbank-file/news/VisaT51440x552_1668766241559.jpg'
+                    alt=''
+                /></div>
+            <div><img
+                    class='home-banner-img'
+                    src='https://cdn.hdbank.com.vn/hdbank-file/news/Gotrust_1654158081037.jpg'
+                    alt=''
+                /></div>
+            <div><img
+                    class='home-banner-img'
+                    src='https://cdn.hdbank.com.vn/hdbank-file/news/HinhKVtranglandingpageDesktop2609x1000px_1665549556685.png'
+                    alt=''
+                /></div>
+        </div>
+        <div class='home-info-wrap'>
+            <div>
+                <a class='home-support' target="_blank" href='https://www.google.com/maps/search/HD+Bank/@10.8257594,106.6889605,15z/data=!3m1!4b1?hl=vi-VN'>
+                    <ion-icon name="map-outline"></ion-icon>
+                </a>
+                <a class='home-support' style="margin-left: 12px;" href="mailto:info@hdbank.com.vn">
+                    <ion-icon name="mail-outline"></ion-icon>
+                </a>
+            </div>
+
+            <ul class='home-info'>
+                <li class='account-item'>
+                    <h2 class='account-item-header'>Số tài khoản:</h2>
+                    <h2 class='account-des'>{{token}}</h2>
+                    <input hidden type='text' value={{token}} id='inputAccount' />
+                    <span class='button-copy' onclick='handleCopy()'><ion-icon name='copy-outline'></ion-icon></span>
+                    <span>
+                        <a href='#' class='icon-qr' data-bs-toggle='modal' data-bs-target='#qr-code'>
+                            <ion-icon class='icon-eye' name='qr-code-outline'></ion-icon>
+                        </a>
+                    </span>
+                </li>
+                <li class='account-item'>
+                    <h2 class='account-item-header'>Số dư:</h2>
+                    <input type='password' class='input account-des account-total' value={{token}} />
+                    <span><ion-icon class='icon-eye eye-open hidden' name='eye-outline'></ion-icon></span>
+                    <span><ion-icon class='icon-eye eye-close' name='eye-off-outline'></ion-icon></span>
+                </li>
+            </ul>
+
+            <div>
+                <a href="/addMoney" class="btn btn-warning">
+                    <ion-icon name="add-outline"></ion-icon>
+                    Nạp tiền
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Show QR -->
+<div class='modal fade' id='qr-code' tabindex='-1' aria-labelledby='exampleModalLabel' aria-hidden='true'>
+    <div class='modal-dialog modal-dialog-centered modal-sm'>
+        <div class='modal-content'>
+            <div class='wrapper-qr'>
+                <div class='form' hidden>
+                    <input type='text' spellcheck='false' value={{token}} />
+                    <button>Generate QR Code</button>
+                </div>
+                <div class='qr-code'>
+                    <img src='' alt='qr-code' />
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Ẩn hiện số dư
+    const input = document.querySelector('.input')
+    const eyeOpen = document.querySelector('.eye-open')
+    const eyeClose = document.querySelector('.eye-close')
+
+    eyeOpen.addEventListener('click', function() {
+        eyeOpen.classList.add('hidden')
+        eyeClose.classList.remove('hidden')
+        input.setAttribute('type', 'password')
+    })
+
+    eyeClose.addEventListener('click', function() {
+        eyeOpen.classList.remove('hidden')
+        eyeClose.classList.add('hidden')
+        input.setAttribute('type', 'text')
+    })
+</script>
